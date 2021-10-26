@@ -1,6 +1,8 @@
-# user.services
+# Java Application - Spring Boot with JPA to maintain user into MySQL Database running on Embedded Tomcat
 
-1) User CRUD (Spring Boot, Embedded Tomcat, MySQL, JPA)
+# Part of Microservices
+
+1) User CRUD
 - to create, maintain and to handle user in a standalone database (MySQL)
 - encrypt stored password
 
