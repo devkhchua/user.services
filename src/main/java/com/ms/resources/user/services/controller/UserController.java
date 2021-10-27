@@ -36,6 +36,7 @@ public class UserController {
 
     private JsonWebToken jsonWebToken = new JsonWebToken();
 
+    //Create users into database
     @PostMapping(value = "/user/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User user) {
         log.info("Creating user {} to the database", user.getName());
@@ -43,6 +44,7 @@ public class UserController {
 
     }
 
+    //Retrieve all available users
     @GetMapping("/user/retrieve/all")
     public ResponseEntity<List<User>> retrieveUser() {
         try {
@@ -55,17 +57,20 @@ public class UserController {
         return null;
     }
 
+    //Retrieve specific user
     @GetMapping("/user/retrieve/{username}")
     public ResponseEntity<User> retrieveUser(@PathVariable("username") String username) {
         log.info("Retrieving user from the database " + username);
         return ResponseEntity.ok().body((userService.findUserByUsername(username)));
     }
 
+    //Test function
     @GetMapping("/user/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok().body("Return message Test !");
     }
 
+    //Refresh token when access token has expired
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authHeader = request.getHeader(AUTHORIZATION);

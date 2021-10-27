@@ -22,10 +22,13 @@ import java.util.List;
 @Transactional
 @Slf4j
 
+//Implementor class to implement functions to store into database.
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //Override function in UserDetailsService class (from spring security)
+    //To retrieve user's to be authenticated from user database table in MySQL instead of default spring security admin/users
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -36,6 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         log.info("[UserServiceImpl] - User found in database : {} ", user.getUsername());
 
+        //No roles required, hence creating a basic roles for all users.
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("BASIC"));
 

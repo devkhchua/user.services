@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+//Entity class which is an object used to store into the database
+//It reflects the database table
 @Entity
 @Data
 @AllArgsConstructor

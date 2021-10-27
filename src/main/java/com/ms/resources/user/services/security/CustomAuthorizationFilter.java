@@ -24,18 +24,27 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+//Custom authorization class to perform authorization through Java Spring Security
+//Can be used to override existing authorization function to implement custom authorization
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     private JsonWebToken jsonWebToken = new JsonWebToken();
 
+    //Override authorization filter function from Spring Security
+    //eg : if let's say there is anything that we want to verify from each and every request passing into our APIs, we can implement it here
+    //For our case, we're validating the header, to see if the authorization token (access token) is valid
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //if it's login, no filter required and proceed with request/response
         log.info("[CustomAuthorizationFilter] - doFilterInternal");
+        //Login and Refresh Token API doesn't need to have authorization header for it to be triggered.
         if (request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token/refresh")) {
             filterChain.doFilter(request, response);
         } else {
+            //The rest of the APIs available will be required to have Authorization Header with Bearer [Access Token]
+            //Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBsZSIsImV4cCI6MTYzNTkzMDc0MH0.Avr76icUPOZkoPUoYhmLMggGmx6WB0RmA6w71nGCLSg
+            //Else it'll return error message
             String authHeader = request.getHeader(AUTHORIZATION);
             if (null != authHeader && authHeader.startsWith("Bearer ")) {
                 try {

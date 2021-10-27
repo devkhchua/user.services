@@ -15,6 +15,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
+//JWT utility classes to be used across other classes.
 @Slf4j
 public class JsonWebToken {
 

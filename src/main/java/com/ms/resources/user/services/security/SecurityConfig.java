@@ -17,6 +17,8 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+
+//Custom class to configure web security behaviour with custom behaviour.
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -26,12 +28,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    //Override authentication manager to use BCryptPasswordEncoder.
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         log.info("[SecurityConfig] - configure!");
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    //Override spring security config to allow/disallow certain request that doesn't match your rules.
+    //In our case, we're overriding default spring security login API with /api/login/
+    //Overriding the session management to be "STATELESS" will guarantee application will not create session
+    //each and every request will be re-authenticated
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.info("[SecurityConfig] - http configure!");

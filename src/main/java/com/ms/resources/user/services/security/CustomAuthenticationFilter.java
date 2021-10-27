@@ -18,7 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+//Custom authentication class to perform authentication through Java Spring Security
+//Can be used to override existing authentication function to implement custom authentication
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -29,6 +30,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         this.authenticationManager = authenticationManager;
     };
 
+    //Override authentication function from Spring Security
+    //eg : if let's say there is a third party handling accounts/authentication, and implement it here.
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("[CustomAuthenticationFilter] - attemptAuthentication");
@@ -39,6 +42,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return authenticationManager.authenticate(authenticationToken);
     }
 
+    //Override after successfully authenticated function from Spring Security
+    //eg : if successfully authentication we can implement custom behaviour
+    //For our case, we implement generating access/refresh (JWT token) for authenticated users
+    //so that we can use it as authorization for API calls.
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("[CustomAuthenticationFilter] - successfulAuthentication");
