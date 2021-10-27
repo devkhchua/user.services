@@ -1,7 +1,6 @@
 package com.ms.resources.user.services.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.ms.resources.user.services.util.JsonWebToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
+    private JsonWebToken jsonWebToken = new JsonWebToken();
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
         this.authenticationManager = authenticationManager;
@@ -43,21 +43,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("[CustomAuthenticationFilter] - successfulAuthentication");
         User user = (User) authResult.getPrincipal();
-        //enhance to encrypt or decrypt the secret key
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-
-        String access_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algorithm);
-
-        String refresh_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                .sign(algorithm);
-
+        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        String access_token = jsonWebToken.generateAccessToken(user.getUsername(), request, roles);
+        String refresh_token = jsonWebToken.generateRefreshToken(user.getUsername());
         response.setHeader("access_token", access_token);
         response.setHeader("refresh_token", refresh_token);
     }
