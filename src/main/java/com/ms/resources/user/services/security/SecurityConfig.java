@@ -36,19 +36,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //Override spring security config to allow/disallow certain request that doesn't match your rules.
-    //In our case, we're overriding default spring security login API with /api/login/
+    //In our case, we're overriding default spring security login API with /auth/login/
     //Overriding the session management to be "STATELESS" will guarantee application will not create session
     //each and every request will be re-authenticated
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         log.info("[SecurityConfig] - http configure!");
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
+        customAuthenticationFilter.setFilterProcessesUrl("/auth/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAnyAuthority("BASIC");
-        http.authorizeRequests().antMatchers(POST, "/api/user/**").hasAnyAuthority("BASIC");
+        http.authorizeRequests().antMatchers("/auth/login/**", "/auth/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/auth/user/**").hasAnyAuthority("BASIC");
+        http.authorizeRequests().antMatchers(POST, "/auth/user/**").hasAnyAuthority("BASIC");
         http.authorizeRequests().anyRequest().authenticated();
         //http.authorizeRequests().anyRequest().permitAll();
         http.addFilter(customAuthenticationFilter);

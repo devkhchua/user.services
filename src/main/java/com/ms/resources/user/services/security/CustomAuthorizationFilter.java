@@ -39,7 +39,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         //if it's login, no filter required and proceed with request/response
         log.info("[CustomAuthorizationFilter] - doFilterInternal");
         //Login and Refresh Token API doesn't need to have authorization header for it to be triggered.
-        if (request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token/refresh")) {
+        if (request.getServletPath().equals("/auth/login") || request.getServletPath().equals("/auth/token/refresh")) {
             filterChain.doFilter(request, response);
         } else {
             //The rest of the APIs available will be required to have Authorization Header with Bearer [Access Token]
