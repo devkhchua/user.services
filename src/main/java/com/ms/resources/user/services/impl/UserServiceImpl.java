@@ -5,6 +5,7 @@ import com.ms.resources.user.services.repository.UserRepository;
 import com.ms.resources.user.services.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,8 +25,10 @@ import java.util.List;
 
 //Implementor class to implement functions to store into database.
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     //Override function in UserDetailsService class (from spring security)
     //To retrieve user's to be authenticated from user database table in MySQL instead of default spring security admin/users
