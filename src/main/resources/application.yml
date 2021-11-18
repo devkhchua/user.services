@@ -1,21 +1,19 @@
 server:
-  port: 0
+  port: 9002
 spring:
-  zipkin: http://127.0.0.1:9411/
+  config:
+    import: optional:configserver:http://config-service
+  #zipkin: http://127.0.0.1:9411/
   datasource:
-    url: jdbc:mysql://localhost:3306/user-services
+    url: jdbc:mysql://mysql:3306/user-service
     username: root
-    password: watashiwa
+    password: password
   jpa:
     hibernate.ddl-auto: update
     generate-ddl: true
     show-sql: true
   application:
-    name: auth-service
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${random.uuid}
+    name: user-service
 
 management:
   endpoints:
